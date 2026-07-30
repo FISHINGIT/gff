@@ -169,12 +169,12 @@
 
   .h2row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
   .inlinereset {
-    border: 1px solid var(--border); background: transparent; color: var(--series-1);
+    border: 1px solid var(--border); background: transparent; color: var(--text-muted);
     font: inherit; font-size: 12px; font-weight: 550; padding: 3px 10px; border-radius: 8px;
-    cursor: pointer; white-space: nowrap; display: none;
+    cursor: pointer; white-space: nowrap; display: inline-block;
   }
-  .inlinereset:hover { background: var(--page); }
-  body.filtered .inlinereset { display: inline-block; }
+  .inlinereset:hover { background: var(--page); color: var(--text-primary); }
+  body.filtered .inlinereset { color: var(--series-1); border-color: var(--series-1); }
   .maplegend { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px; color: var(--text-secondary); font-size: 12px; align-items: center; }
   .maplegend .sw { display: inline-block; width: 14px; height: 14px; border-radius: 4px; vertical-align: -2px; margin-right: 5px; }
 
@@ -221,7 +221,8 @@
   td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
   tr.dim td { color: var(--text-muted); }
   details { margin-top: 12px; }
-  summary { cursor: pointer; color: var(--text-secondary); font-size: 12.5px; }
+  summary { cursor: pointer; color: var(--text-secondary); font-size: 12.5px; font-weight: 700; }
+  summary:hover { color: var(--text-primary); }
   details[open] summary { margin-bottom: 8px; }
 
   ul.hl { margin: 6px 0 0; padding-left: 18px; color: var(--text-secondary); }
@@ -245,6 +246,9 @@
   #tooltip .tv { font-weight: 650; font-size: 13.5px; }
   #tooltip .tl { color: var(--text-secondary); }
   footer { color: var(--text-muted); font-size: 12px; margin-top: 22px; line-height: 1.5; border-top: 3px solid var(--ea-green); padding-top: 12px; }
+  footer p { margin: 0 0 10px; }
+  footer a { color: var(--series-1); font-weight: 550; }
+  footer .footnote { color: var(--text-secondary); font-size: 12.5px; }
 </style>
 </head>
 <body>
@@ -290,7 +294,7 @@
       </span>
     </label>
     <button class="resetbtn" id="fReset" type="button">Reset filters</button>
-    <span class="filternote" id="fNote">Tip: click a region on the map or a category bar to filter. Everything recalculates live.</span>
+    <span class="filternote" id="fNote">Tip: click a Region on the map or a category bar to filter. Everything recalculates live.</span>
   </div>
 
   <!-- ============ IMPACT STORY ============ -->
@@ -308,16 +312,16 @@
     <div class="grid kpis">
       <div class="card kpi"><div class="label">Total investment</div><div class="value" id="kInvest">£135,547</div><div class="note" id="kInvestN">awarded this round</div></div>
       <div class="card kpi"><div class="label">Average grant</div><div class="value" id="kAvg">£1,595</div><div class="note">modest and efficient</div></div>
-      <div class="card kpi"><div class="label">Regions reached</div><div class="value" id="kRegions">8 of 8</div><div class="note">Angling Trust regions</div></div>
+      <div class="card kpi"><div class="label">Regions reached</div><div class="value" id="kRegions">8 of 8</div><div class="note">Angling Trust Regions</div></div>
       <div class="card kpi"><div class="label">EA areas reached</div><div class="value" id="kAreas">14 of 14</div><div class="note">Environment Agency areas</div></div>
     </div>
 
     <section class="card">
       <h2>Where the investment went</h2>
-      <p class="h2note">Investment across England. Darker means more investment. Both maps respond to the filters above. London is reported within the South East region for this round, so the London area is shaded with the South East.</p>
+      <p class="h2note">Investment across England. Darker means more investment. Both maps respond to the filters above. London is reported within the South East Region for this round, so the London area is shaded with the South East.</p>
       <div class="maps-grid">
         <div>
-          <h3 class="mapcap">By Angling Trust region <span>click a region to filter</span></h3>
+          <h3 class="mapcap">By Angling Trust Region <span>click a Region to filter</span></h3>
           <svg id="geomap" class="geomap" role="group" aria-label="Map of investment by Angling Trust region"></svg>
         </div>
         <div>
@@ -353,10 +357,10 @@
       <h2>Key highlights</h2>
       <ul class="hl">
         <li>This round delivered <strong>85 new Get Fishing projects</strong> with <strong>£135,547 invested</strong>, at an average grant of £1,595.</li>
-        <li>Investment reached <strong>all 8 Angling Trust regions</strong> and <strong>all 14 Environment Agency areas</strong> of England.</li>
+        <li>Investment reached <strong>all 8 Angling Trust Regions</strong> and <strong>all 14 Environment Agency areas</strong> of England.</li>
         <li><strong>27 of 85 projects</strong> went beyond traditional angling clubs, widening participation through schools, youth and scout groups, charities and community interest companies.</li>
         <li>Notable partners include the <strong>NHS</strong>, <strong>RAF Wyton People and Families Support</strong>, <strong>Norfolk Fire and Rescue Service</strong>, schools, colleges and local councils.</li>
-        <li>The region with the largest investment was the <strong>East of England</strong>, with £34,076 across 21 projects (25% of the total).</li>
+        <li>The Region with the largest investment was the <strong>East of England</strong>, with £34,076 across 21 projects (25% of the total).</li>
       </ul>
     </section>
   </div>
@@ -373,7 +377,7 @@
 
     <section class="card">
       <h2>Applications by region</h2>
-      <p class="h2note" id="stackNote">Approved and rejected applications by participation region. 29 rejected applications have no region recorded. Click a row to focus on a region.</p>
+      <p class="h2note" id="stackNote">Approved and rejected applications by Angling Trust Region. 29 rejected applications have no Region recorded. Click a row to focus on a region.</p>
       <div class="legend" id="stackLegend"></div>
       <div id="stackBars"></div>
       <details>
@@ -431,8 +435,8 @@
     <section class="card">
       <h2>Key insights</h2>
       <ul class="hl">
-        <li>The overall approval rate is <strong>59.0%</strong> (85 of 144 applications). Excluding the 29 applications with no region recorded, regional approval rates range from 65% to 100%.</li>
-        <li><strong>29 of the 59 rejected applications (49%)</strong> have no region recorded, which suggests incomplete applications are a major driver of rejection.</li>
+        <li>The overall approval rate is <strong>59.0%</strong> (85 of 144 applications). Excluding the 29 applications with no Region recorded, regional approval rates range from 65% to 100%.</li>
+        <li><strong>29 of the 59 rejected applications (49%)</strong> have no Region recorded, which suggests incomplete applications are a major driver of rejection.</li>
         <li>Average request size is similar for approved (£1,595) and rejected (£1,518) applications, so rejections reflect application quality rather than the amount requested.</li>
         <li>Unmet demand stands at <strong>£88,071</strong>, the funding requested by rejected applicants; the largest unmet demand with a known region is in the East of England.</li>
       </ul>
@@ -440,7 +444,8 @@
   </div>
 
   <footer>
-    The Get Fishing Fund is funded by the Environment Agency from fishing licence income and managed by the Angling Trust. Source: GFF Projects and Small Grants v1 (29 July 2026). Main fund applications only; the separate Small Grants pot (19 submitted applications) is not shown. Personal data (contact names, emails, postcodes) is excluded, and rejected applicants appear only in aggregate.
+    <p class="footnote">More information about the Get Fishing Fund, Guidance Notes and Application Forms are available <a href="https://anglingtrust.net/funding/get-fishing-fund/" target="_blank" rel="noopener">here</a>. For the purpose of this report the Angling Trust London Region is included in the South East Region. Become a member of the Angling Trust &amp; Fish Legal and help us protect fish and fishing for you and generations to come. <a href="https://anglingtrust.net/membership/" target="_blank" rel="noopener">Click here to join or renew your membership</a> or call our membership team on 01568 620447.</p>
+    <p>The Get Fishing Fund is funded by the Environment Agency from fishing licence income and managed by the Angling Trust. Source: GFF Projects and Small Grants v1 (29 July 2026). Main fund applications only; the separate Small Grants pot (19 submitted applications) is not shown. Personal data (contact names, emails, postcodes) is excluded, and rejected applicants appear only in aggregate.</p>
   </footer>
 </div>
 <div id="tooltip" role="status"></div>
@@ -785,7 +790,7 @@ function renderImpact() {
     path.setAttribute("tabindex", "0");
     path.setAttribute("role", "button");
     path.setAttribute("aria-pressed", String(F.region === eff));
-    path.setAttribute("aria-label", (name === "London" ? "London, reported within the South East" : name) + ": " + (v > 0 ? gbp(v) : "no projects"));
+    path.setAttribute("aria-label", (name === "London" ? "London, reported within the South East Region" : name) + ": " + (v > 0 ? gbp(v) : "no projects"));
     path.addEventListener("click", () => setRegion(eff));
     bindTip(path, () => {
       const lines = [
@@ -793,8 +798,8 @@ function renderImpact() {
         [name === "London" ? "South East (including London)" : name, "tl"],
         [v > 0 ? `${n} projects, ${pct(v / (totalNow || 1))} of shown investment` : "No matching projects", "tl"]
       ];
-      if (name === "London") lines.push(["London is reported within the South East for this round", "tl"]);
-      lines.push([F.region === eff ? "Click to clear region filter" : "Click to filter to this region", "tl"]);
+      if (name === "London") lines.push(["London is reported within the South East Region for this round", "tl"]);
+      lines.push([F.region === eff ? "Click to clear the Region filter" : "Click to filter to this Region", "tl"]);
       return lines;
     });
     map.appendChild(path);
@@ -842,7 +847,7 @@ function renderImpact() {
     bv.appendChild(sm);
     bar.addEventListener("click", () => setRegion(name));
     bindTip(bar, () => [[gbp(v), "tv"], [name, "tl"], [`${n} projects`, "tl"],
-      [F.region === name ? "Click to clear region filter" : "Click to filter to this region", "tl"]]);
+      [F.region === name ? "Click to clear the Region filter" : "Click to filter to this Region", "tl"]]);
     trk.append(bar, bv);
     row.append(bl, trk);
     regionBars.appendChild(row);
@@ -925,13 +930,13 @@ function renderStatus() {
     unmetTxt = "requested by rejected applicants";
   }
   document.getElementById("sApps").textContent = apps;
-  document.getElementById("sAppsN").textContent = F.region ? F.region + " (region filter only)" : "main fund, this round";
+  document.getElementById("sAppsN").textContent = F.region ? F.region + " (Region filter only)" : "main fund, this round";
   document.getElementById("sAppr").textContent = cg ? rows.length : appr;
   document.getElementById("sApprN").textContent = cg
     ? "matching all current filters"
     : pct(appr / apps) + " approval rate";
   document.getElementById("sReq").textContent = req === null ? "n/a" : gbp(req);
-  document.getElementById("sReqN").textContent = F.region ? "region filter only" : "across all applications";
+  document.getElementById("sReqN").textContent = F.region ? "Region filter only" : "across all applications";
   document.getElementById("sAwd").textContent = gbp(inv);
   document.getElementById("sAwdN").textContent = filtersActive() ? "in the filtered selection" : "60.6% of requested funding";
   document.getElementById("sUnmet").textContent = unmet === null ? "n/a" : gbp(unmet);
@@ -942,7 +947,7 @@ function renderStatus() {
   const byReg = aggByRegion(regRows);
   document.getElementById("stackNote").textContent = cg
     ? "Approved segments reflect the category and grant filters; rejected counts always show all rejected applications (category is unknown for rejections). Click a row to focus on a region."
-    : "Approved and rejected applications by participation region. 29 rejected applications have no region recorded. Click a row to focus on a region.";
+    : "Approved and rejected applications by Angling Trust Region. 29 rejected applications have no Region recorded. Click a row to focus on a region.";
   const stackBars = document.getElementById("stackBars");
   stackBars.replaceChildren();
   const data = REGION_META.filter(r => r[0] !== "London")
@@ -1080,7 +1085,7 @@ function renderAll() {
   document.body.classList.toggle("filtered", !!filtersActive());
   fNote.textContent = filtersActive()
     ? "Filtered: " + bits.join(" · ") + ". Values below reflect this selection."
-    : "Tip: click a region on the map or a category bar to filter. Everything recalculates live.";
+    : "Tip: click a Region on the map or a category bar to filter. Everything recalculates live.";
   renderImpact();
   renderStatus();
 }
