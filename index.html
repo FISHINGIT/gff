@@ -314,7 +314,7 @@
 
     <section class="card">
       <h2>Where the investment went</h2>
-      <p class="h2note">Investment across England. Darker means more investment. Both maps respond to the filters above.</p>
+      <p class="h2note">Investment across England. Darker means more investment. Both maps respond to the filters above. London is reported within the South East region for this round, so the London area is shaded with the South East.</p>
       <div class="maps-grid">
         <div>
           <h3 class="mapcap">By Angling Trust region <span>click a region to filter</span></h3>
@@ -592,7 +592,9 @@ const fMax = document.getElementById("fMax");
 const fRangeVal = document.getElementById("fRangeVal");
 const fNote = document.getElementById("fNote");
 REGION_META.filter(r => r[0] !== "London").forEach(([name]) => {
-  const o = document.createElement("option"); o.value = name; o.textContent = name; fRegion.appendChild(o);
+  const o = document.createElement("option"); o.value = name;
+  o.textContent = name === "South East" ? "South East (incl. London)" : name;
+  fRegion.appendChild(o);
 });
 CAT_ORDER.forEach(c => {
   const o = document.createElement("option"); o.value = c; o.textContent = c; fCat.appendChild(o);
@@ -766,34 +768,43 @@ function renderImpact() {
   const map = document.getElementById("geomap");
   map.setAttribute("viewBox", "0 0 420 " + MAP_H);
   map.replaceChildren();
+  /* London is reported within the South East for this round, so its shape
+     takes the South East's value, colour and behaviour (boundary stays visible) */
+  const effRegion = name => name === "London" ? "South East" : name;
   REGION_META.forEach(([name]) => {
     const shape = MAP_SHAPES[name];
     if (!shape) return;
-    const v = byReg[name].inv, n = byReg[name].n;
+    const eff = effRegion(name);
+    const v = byReg[eff].inv, n = byReg[eff].n;
     const step = seqStep(v);
     const path = document.createElementNS(SVGNS, "path");
     path.setAttribute("d", shape.d);
     path.setAttribute("fill-rule", "evenodd");
-    path.setAttribute("class", "region" + (v <= 0 ? " zero" : "") + (F.region && F.region !== name ? " dim" : ""));
+    path.setAttribute("class", "region" + (v <= 0 ? " zero" : "") + (F.region && F.region !== eff ? " dim" : ""));
     if (step > 0) path.setAttribute("fill", `var(--seq-${step})`);
     path.setAttribute("tabindex", "0");
     path.setAttribute("role", "button");
-    path.setAttribute("aria-pressed", String(F.region === name));
-    path.setAttribute("aria-label", name + ": " + (v > 0 ? gbp(v) : "no projects"));
-    if (name !== "London") path.addEventListener("click", () => setRegion(name));
-    bindTip(path, () => [
-      [v > 0 ? gbp(v) : "No funded projects", "tv"],
-      [name, "tl"],
-      [v > 0 ? `${n} projects, ${pct(v / (totalNow || 1))} of shown investment` : "No matching projects", "tl"],
-      [name !== "London" ? (F.region === name ? "Click to clear region filter" : "Click to filter to this region") : "", "tl"]
-    ].filter(l => l[0] !== ""));
+    path.setAttribute("aria-pressed", String(F.region === eff));
+    path.setAttribute("aria-label", (name === "London" ? "London, reported within the South East" : name) + ": " + (v > 0 ? gbp(v) : "no projects"));
+    path.addEventListener("click", () => setRegion(eff));
+    bindTip(path, () => {
+      const lines = [
+        [v > 0 ? gbp(v) : "No funded projects", "tv"],
+        [name === "London" ? "South East (including London)" : name, "tl"],
+        [v > 0 ? `${n} projects, ${pct(v / (totalNow || 1))} of shown investment` : "No matching projects", "tl"]
+      ];
+      if (name === "London") lines.push(["London is reported within the South East for this round", "tl"]);
+      lines.push([F.region === eff ? "Click to clear region filter" : "Click to filter to this region", "tl"]);
+      return lines;
+    });
     map.appendChild(path);
   });
   /* labels on top so region strokes never cross them */
   REGION_META.forEach(([name]) => {
     const shape = MAP_SHAPES[name];
     if (!shape) return;
-    const v = byReg[name].inv;
+    const eff = effRegion(name);
+    const v = byReg[eff].inv;
     const step = seqStep(v);
     const t = document.createElementNS(SVGNS, "text");
     const off = MAP_LABEL_OFFSET[name] || [0, 0];
@@ -801,7 +812,8 @@ function renderImpact() {
     t.setAttribute("y", shape.cy + off[1]);
     t.setAttribute("text-anchor", "middle");
     t.setAttribute("fill", step > 0 ? `var(--seq-ink-${step})` : "var(--text-muted)");
-    if (F.region && F.region !== name) t.setAttribute("opacity", "0.35");
+    if (name === "London") t.setAttribute("font-size", "9");
+    if (F.region && F.region !== eff) t.setAttribute("opacity", "0.35");
     t.textContent = MAP_CODE[name];
     map.appendChild(t);
   });
@@ -819,7 +831,8 @@ function renderImpact() {
   ordered.forEach(([name, n, v]) => {
     const row = document.createElement("div");
     row.className = "barrow clickable" + (F.region && F.region !== name ? " dim" : "");
-    const bl = document.createElement("div"); bl.className = "bl"; bl.textContent = name;
+    const bl = document.createElement("div"); bl.className = "bl";
+    bl.textContent = name === "South East" ? "South East (incl. London)" : name;
     const trk = document.createElement("div"); trk.className = "bartrack";
     const bar = document.createElement("button"); bar.type = "button"; bar.className = "bar";
     bar.style.width = (v / maxInv * 62) + "%";
@@ -836,10 +849,11 @@ function renderImpact() {
   });
   const rtb = document.querySelector("#regionTable tbody");
   rtb.replaceChildren();
-  REGION_META.forEach(([name]) => {
+  REGION_META.filter(r => r[0] !== "London").forEach(([name]) => {
     const v = byReg[name].inv, n = byReg[name].n;
+    const label = name === "South East" ? "South East (incl. London)" : name;
     const tr = document.createElement("tr");
-    [[name], [n, "num"], [gbp(v), "num"], [pct(v / (totalNow || 1)), "num"]].forEach(([val, cls]) => {
+    [[label], [n, "num"], [gbp(v), "num"], [pct(v / (totalNow || 1)), "num"]].forEach(([val, cls]) => {
       const td = document.createElement("td"); if (cls) td.className = cls; td.textContent = val; tr.appendChild(td);
     });
     rtb.appendChild(tr);
